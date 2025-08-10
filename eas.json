@@ -17,10 +17,7 @@
       "env": {
         "EXPO_NO_DOTENV": "1",
         "APP_ENV": "production",
-        "FLIPPER_DISABLE": "1",
-        "BRANCH_TEST_SDK_KEY": "key_test_mxuaCkCTa2ll62GykWSlnpppwudTGy9B",
-        "BRANCH_SDK_KEY": "key_live_kxsbtXAeEWp6t3bdCQYS4jndxxbt2EyL",
-        "API_URL": "https://link.com/"
+        "FLIPPER_DISABLE": "1"
       }
     },
     "staging": {
@@ -37,10 +34,7 @@
       "env": {
         "APP_ENV": "staging",
         "EXPO_NO_DOTENV": "1",
-        "FLIPPER_DISABLE": "1",
-        "BRANCH_TEST_SDK_KEY": "key_test_mxuaCkCTa2ll62GykWSlnpppwudTGy9B",
-        "BRANCH_SDK_KEY": "key_live_nsFiFbxMlXjp14Pth5RgapnlvrhKVxYP",
-        "API_URL": "https://link.com/"
+        "FLIPPER_DISABLE": "1"
       }
     },
     "development": {
@@ -56,9 +50,7 @@
       "env": {
         "APP_ENV": "development",
         "EXPO_NO_DOTENV": "1",
-        "BRANCH_TEST_SDK_KEY": "key_test_mxuaCkCTa2ll62GykWSlnpppwudTGy9B",
-        "BRANCH_SDK_KEY": "key_live_nsFiFbxMlXjp14Pth5RgapnlvrhKVxYP",
-        "API_URL": "https://link.com/"
+        "FLIPPER_DISABLE": "1"
       }
     },
     "simulator": {

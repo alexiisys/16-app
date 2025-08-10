@@ -25,8 +25,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   name: Env.NAME,
   description: `${Env.NAME} Mobile App`,
   owner: Env.EXPO_ACCOUNT_OWNER,
-  scheme: Env.SCHEME,
-  slug: 'movie-saver',
+  slug: Env.BUNDLE_ID.replace(/\./g, '') || 'base-app',
   version: Env.VERSION.toString(),
   orientation: 'portrait',
   icon: './assets/icon.png',
@@ -40,20 +39,20 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ios: {
     supportsTablet: false,
     bundleIdentifier: Env.BUNDLE_ID,
-    buildNumber: '7',
+    buildNumber: Env.BUILD_NUMBER,
     associatedDomains: [
-      'applinks:q8tf7.app.link',
-      'applinks:q8tf7-alternate.app.link',
+      `applinks:${Env.IOS_APP_DOMAIN}`,
+      `applinks:${Env.IOS_APP_DOMAIN.replace('.app.link', '-alternate.app.link')}`,
     ],
     config: {
-      usesNonExemptEncryption: false, // Avoid the export compliance warning on the app store
+      usesNonExemptEncryption: false, 
     },
   },
   experiments: {
     typedRoutes: true,
   },
   android: {
-    versionCode: 1,
+    versionCode: parseInt(Env.BUILD_NUMBER, 10),
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
       backgroundColor: '#2E3C4B',
@@ -66,11 +65,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         data: [
           {
             scheme: 'https',
-            host: '8wxde.app.link',
+            host: Env.IOS_APP_DOMAIN,
           },
           {
             scheme: 'https',
-            host: '8wxde-alternate.app.link',
+            host: Env.IOS_APP_DOMAIN.replace('.app.link', '-alternate.app.link'),
           },
         ],
         category: ['BROWSABLE', 'DEFAULT'],
@@ -83,23 +82,22 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   plugins: [
     [
-      '@config-plugins/react-native-branch',
+      'react-native-fbsdk-next',
       {
-        apiKey: Env.BRANCH_SDK_KEY,
-        iosAppDomain: 'q8tf7.app.link',
+        appID: Env.FB_APP_ID,
+        clientToken: Env.FB_CLIENT_TOKEN,
+        displayName: Env.NAME,
+        scheme: `fb${Env.FB_APP_ID}`,
+        advertiserIDCollectionEnabled: true,
+        autoLogAppEventsEnabled: true,
+        isAutoInitEnabled: true,
       },
     ],
     [
-      'react-native-fbsdk-next',
+      '@config-plugins/react-native-branch',
       {
-        appID: Env.FACEBOOK_APPID,
-        clientToken: Env.FACEBOOK_ClIENT_TOKEN,
-        displayName: Env.NAME,
-        scheme: `fb${Env.FACEBOOK_APPID}`,
-        advertiserIDCollectionEnabled: true, // Enable for install attribution
-        autoLogAppEventsEnabled: true, // Enable for automatic event logging
-        isAutoInitEnabled: true, // Enable for automatic initialization
-        iosUserTrackingPermission: false, // Disable to avoid NSUserTrackingUsageDescription
+        apiKey: Env.BRANCH_LIVE_KEY,
+        iosAppDomain: Env.IOS_APP_DOMAIN,
       },
     ],
     [
@@ -129,7 +127,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
           './assets/fonts/Gilroy-UltraLight.ttf',
           './assets/fonts/Gilroy-Light.ttf',
           './assets/fonts/Gilroy-Black.ttf',
-          './assets/fonts/Inter.ttf',
         ],
       },
     ],
@@ -140,6 +137,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ],
   extra: {
     ...ClientEnv,
+    IOS_URL: Env.IOS_URL,
+    ANDROID_URL: Env.ANDROID_URL,
     eas: {
       projectId: Env.EAS_PROJECT_ID,
     },

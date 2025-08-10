@@ -1,36 +1,47 @@
-<h1 align="center">
-  <img alt="logo" src="./assets/icon.png" width="124px" style="border-radius:10px"/><br/>
-Movie saver </h1>
+# BASE - React Native App
 
-## Requirements
+Environment-driven React Native app built with Expo and TypeScript.
 
-- [React Native dev environment ](https://reactnative.dev/docs/environment-setup)
-- [Node.js LTS release](https://nodejs.org/en/)
-- [Git](https://git-scm.com/)
-- [Watchman](https://facebook.github.io/watchman/docs/install#buildinstall), required only for macOS or Linux users
-- [Pnpm](https://pnpm.io/installation)
+## Setup
 
-## 👋 Quick start
-
-Clone the repo to your machine and install deps :
-
-```sh
+```bash
 pnpm install
+cp .env.example .env.development
+pnpm prebuild:development
+pnpm start
 ```
 
-To run the app on ios
+## Commands
 
-```sh
-pnpm ios
-```
+- `pnpm prebuild:development` - Development Prebuild
+- `pnpm prebuild:production` - Production Prebuild
 
-To run the app on Android
+- `pnpm start` - Start development server
+- `pnpm build:android` - Build Android APK
+- `pnpm build:ios` - Build iOS app
 
-```sh
-pnpm android
-```
+- `pnpm android:production` - Run production android app
+- `pnpm ios:production` - Run production ios app
 
-Create the env files from the example .env.development
+## Stack
 
-- .env.production
-- .env.staging
+- React Native + Expo
+- TypeScript + Nativewind
+- Environment-driven configuration
+- Branch.io deep linking
+
+## App Naming Convention
+
+### **Format: `{NUMBER}-{CATEGORY}-{NAME}`**
+
+**Examples:**
+1-ecommerce-shopper
+2-social-connect
+3-fitness-tracker
+4-food-delivery
+5-music-player
+6-news-reader
+7-travel-guide
+8-photo-editor
+9-finance-wallet
+10-gaming-puzzle

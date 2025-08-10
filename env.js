@@ -1,22 +1,9 @@
-/* eslint-env node */
-/*
- * Env file to load and validate env variables
- * Be cautious; this file should not be imported into your source folder.
- * We split the env variables into two parts:
- * 1. Client variables: These variables are used in the client-side code (src folder).
- * 2. Build-time variables: These variables are used in the build process (app.config.ts file).
- * Import this file into the `app.config.ts` file to use environment variables during the build process. The client variables can then be passed to the client-side using the extra field in the `app.config.ts` file.
- * To access the client environment variables in your `src` folder, you can import them from `@env`. For example: `import Env from '@env'`.
- */
-/**
- * 1st part: Import packages and Load your env variables
- * we use dotenv to load the correct variables from the .env file based on the APP_ENV variable (default is development)
- * APP_ENV is passed as an inline variable while executing the command, for example: APP_ENV=staging pnpm build:android
- */
 const z = require('zod');
 
+// @ts-ignore
 const packageJSON = require('./package.json');
 const path = require('path');
+const process = require('process');
 const APP_ENV = process.env.APP_ENV ?? 'development';
 const envPath = path.resolve(__dirname, `.env.${APP_ENV}`);
 
@@ -24,61 +11,37 @@ require('dotenv').config({
   path: envPath,
 });
 
-// TODO: Replace these values with your own
-
-
-const BUNDLE_ID = 'com.moviesaver.com'; // ios bundle id
-const PACKAGE = 'com.moviesaver.com'; // android package name
-const NAME = 'Movie Saver+'; // app name
-const EXPO_ACCOUNT_OWNER = 'david.appdev.info'; // expo account owner
-const EAS_PROJECT_ID = '47fc5e1e-24e1-4f18-89f3-0fd8fa8e75fe'; // eas project id
-const SCHEME = 'MovieSaver'; // app scheme
-const PRIVACY_POLICY = 'https://v0-movie-psi.vercel.app/privacy-policy'; // app scheme
-const FEEDBACK_FORM = 'https://v0-movie-psi.vercel.app/feedback-form'; // app scheme
-const FACEBOOK_APPID = '1237056204566860'; // TODO
-const FACEBOOK_ClIENT_TOKEN = '8fd6d5b13a7901a90328e2cb91d0e418'; //TODO
-
-
 /**
- * 2nd part: Define your env variables schema
- * we use zod to define our env variables schema
- *
- * we split the env variables into two parts:
- *    1. client: These variables are used in the client-side code (`src` folder).
- *    2. buildTime: These variables are used in the build process (app.config.ts file). You can think of them as server-side variables.
- *
- * Main rules:
- *    1. If you need your variable on the client-side, you should add it to the client schema; otherwise, you should add it to the buildTime schema.
- *    2. Whenever you want to add a new variable, you should add it to the correct schema based on the previous rule, then you should add it to the corresponding object (_clientEnv or _buildTimeEnv).
- *
- * Note: `z.string()` means that the variable exists and can be an empty string, but not `undefined`.
- * If you want to make the variable required, you should use `z.string().min(1)` instead.
- * Read more about zod here: https://zod.dev/?id=strings
- *
+ * Add a suffix to variable env based on APP_ENV
+ * @param {string} name
+ * @returns  {string}
  */
+const withEnvSuffix = (name) => {
+  return APP_ENV === 'production' ? name : `${name}.${APP_ENV}`;
+};
 
 const client = z.object({
   APP_ENV: z.enum(['development', 'staging', 'production']),
   NAME: z.string(),
-  SCHEME: z.string(),
   BUNDLE_ID: z.string(),
   PACKAGE: z.string(),
   VERSION: z.string(),
+  BUILD_NUMBER: z.string(),
   PRIVACY_POLICY: z.string(),
   FEEDBACK_FORM: z.string(),
-  // ADD YOUR CLIENT ENV VARS HERE
-  API_URL: z.string(),
+  FB_APP_ID: z.string(),
+  FB_CLIENT_TOKEN: z.string(),
+  IOS_APP_DOMAIN: z.string(),
 });
 
 const buildTime = z.object({
   EXPO_ACCOUNT_OWNER: z.string(),
   EAS_PROJECT_ID: z.string(),
-  // ADD YOUR BUILD TIME ENV VARS HERE
-  BRANCH_TEST_SDK_KEY: z.string(),
-  FACEBOOK_APPID: z.string(),
-  FACEBOOK_ClIENT_TOKEN: z.string(),
-  BRANCH_SDK_KEY: z.string(),
-  SECRET_KEY: z.string(),
+  FB_APP_ID: z.string(),
+  FB_CLIENT_TOKEN: z.string(),
+  BRANCH_LIVE_KEY: z.string(),
+  IOS_URL: z.string(),
+  ANDROID_URL: z.string(),
 });
 
 /**
@@ -86,37 +49,32 @@ const buildTime = z.object({
  */
 const _clientEnv = {
   APP_ENV,
-  NAME: NAME,
-  SCHEME: SCHEME,
-  BUNDLE_ID: BUNDLE_ID,
-  PACKAGE: PACKAGE,
-  VERSION: packageJSON.version,
-  PRIVACY_POLICY: PRIVACY_POLICY,
-  FEEDBACK_FORM: FEEDBACK_FORM,
-  // ADD YOUR ENV VARS HERE TOO
-  API_URL: process.env.API_URL,
+  NAME: process.env.NAME,
+  BUNDLE_ID: process.env.BUNDLE_ID,
+  PACKAGE: process.env.BUNDLE_ID, // Same as BUNDLE_ID
+  VERSION: process.env.VERSION,
+  BUILD_NUMBER: process.env.BUILD_NUMBER,
+  PRIVACY_POLICY: process.env.PRIVACY_POLICY,
+  FEEDBACK_FORM: process.env.FEEDBACK_FORM,
+  FB_APP_ID: process.env.FB_APP_ID,
+  FB_CLIENT_TOKEN: process.env.FB_CLIENT_TOKEN,
+  IOS_APP_DOMAIN: process.env.IOS_APP_DOMAIN,
 };
+
 
 /**
  * @type {Record<keyof z.infer<typeof buildTime> , unknown>}
  */
 const _buildTimeEnv = {
-  EXPO_ACCOUNT_OWNER,
-  EAS_PROJECT_ID,
-  FACEBOOK_APPID,
-  FACEBOOK_ClIENT_TOKEN,
-  // ADD YOUR ENV VARS HERE TOO
-  BRANCH_TEST_SDK_KEY: process.env.BRANCH_TEST_SDK_KEY,
-  BRANCH_SDK_KEY: process.env.BRANCH_SDK_KEY,
-  SECRET_KEY: process.env.SECRET_KEY,
+  EXPO_ACCOUNT_OWNER: process.env.EXPO_ACCOUNT_OWNER,
+  EAS_PROJECT_ID: process.env.EAS_PROJECT_ID,
+  FB_APP_ID: process.env.FB_APP_ID,
+  FB_CLIENT_TOKEN: process.env.FB_CLIENT_TOKEN,
+  BRANCH_LIVE_KEY: process.env.BRANCH_LIVE_KEY,
+  IOS_URL: process.env.IOS_URL,
+  ANDROID_URL: process.env.ANDROID_URL,
 };
 
-/**
- * 3rd part: Merge and Validate your env variables
- * We use zod to validate our env variables based on the schema we defined above
- * If the validation fails we throw an error and log the error to the console with a detailed message about missed variables
- * If the validation passes we export the merged and parsed env variables to be used in the app.config.ts file as well as a ClientEnv object to be used in the client-side code
- **/
 const _env = {
   ..._clientEnv,
   ..._buildTimeEnv,
