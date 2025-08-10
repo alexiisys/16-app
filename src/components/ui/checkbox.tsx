@@ -67,7 +67,7 @@ const Label = ({ text, testID, className = '' }: LabelProps) => {
   return (
     <Text
       testID={testID}
-      className={` ${className} pl-2 font-inter text-base font-bold text-textGrey`}
+      className={` ${className} pl-2 font-montserrat-800 text-base text-textGrey`}
     >
       {text}
     </Text>

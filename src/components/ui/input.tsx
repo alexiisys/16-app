@@ -16,11 +16,11 @@ import { Text } from './text';
 
 const inputTv = tv({
   slots: {
-    container: '',
-    inputContainer: 'align-center relative flex-row gap-2',
-    label: 'mb-2 font-inter text-lg font-medium text-textGrey',
+    container: 'flex-1',
+    inputContainer: 'align-center items-center relative flex-row gap-2',
+    label: 'mb-2 font-montserrat-500 text-lg text-textGrey',
     input:
-      'rounded-xl border-neutral-300 bg-bgGrey p-4 font-inter text-base font-medium  leading-5 dark:border-neutral-700 dark:text-white',
+      'rounded-xl border-neutral-300 bg-transparent p-3 font-montserrat-500 text-base leading-5 dark:text-white',
   },
 
   variants: {
@@ -36,8 +36,9 @@ const inputTv = tv({
     },
     search: {
       true: {
-        input: 'bg-textGrey text-white',
-        inputContainer: 'items-center rounded-md bg-textGrey px-2',
+        input: 'text-[#4C4E61] ',
+        inputContainer: 'items-center p-2 rounded-xl',
+        container: 'bg-[#FEDFB1] flex-1 rounded-xl justify-center',
       },
     },
     error: {

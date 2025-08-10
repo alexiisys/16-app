@@ -118,6 +118,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       'expo-font',
       {
         fonts: [
+          'node_modules/@expo-google-fonts/montserrat/200ExtraLight/Montserrat_200ExtraLight.ttf',
+          'node_modules/@expo-google-fonts/montserrat/300Light/Montserrat_300Light.ttf',
+          'node_modules/@expo-google-fonts/montserrat/400Regular/Montserrat_400Regular.ttf',
+          'node_modules/@expo-google-fonts/montserrat/500Medium/Montserrat_500Medium.ttf',
+          'node_modules/@expo-google-fonts/montserrat/600SemiBold/Montserrat_600SemiBold.ttf',
+          'node_modules/@expo-google-fonts/montserrat/700Bold/Montserrat_700Bold.ttf',
+          'node_modules/@expo-google-fonts/montserrat/800ExtraBold/Montserrat_800ExtraBold.ttf',
           './assets/fonts/Gilroy-Regular.ttf',
           './assets/fonts/Gilroy-Bold.ttf',
           './assets/fonts/Gilroy-SemiBold.ttf',

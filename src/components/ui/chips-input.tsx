@@ -33,7 +33,7 @@ export const ChipsInput = ({
         onChangeText={(text) => onChangeText(text)}
         icon={
           <TouchableOpacity onPress={() => onAddChip(inputValue)}>
-            <Text className="mr-6 p-2 font-gilroy-600 text-lg text-blue">
+            <Text className="mr-6 p-2 font-montserrat-600 text-lg text-blue">
               Save
             </Text>
           </TouchableOpacity>
@@ -58,7 +58,7 @@ export const ChipsInput = ({
                 key={item}
                 className="flex-row items-center justify-between gap-2 rounded-3xl bg-blue px-4 py-2"
               >
-                <Text className="font-gilroy-500 text-base text-white">
+                <Text className="font-montserrat-500 text-base text-white">
                   {item}
                 </Text>
                 <TouchableOpacity onPress={() => onRemoveChip(item)}>

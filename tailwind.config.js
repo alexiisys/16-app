@@ -9,6 +9,13 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
+        'montserrat-200': ['Montserrat_200ExtraLight'],
+        'montserrat-300': ['Montserrat_300Light'],
+        'montserrat-400': ['Montserrat_400Regular'],
+        'montserrat-500': ['Montserrat_500Medium'],
+        'montserrat-600': ['Montserrat_600SemiBold'],
+        'montserrat-700': ['Montserrat_700Bold'],
+        'montserrat-800': ['Montserrat_800ExtraBold'],
         'gilroy-100': ['Gilroy-Thin'],
         'gilroy-200': ['Gilroy-UltraLight'],
         'gilroy-300': ['Gilroy-Light'],

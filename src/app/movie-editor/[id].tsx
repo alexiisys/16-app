@@ -7,19 +7,11 @@ import { Pressable, ScrollView, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { z } from 'zod';
 
-import {
-  Button,
-  colors,
-  ControlledInput,
-  Image,
-  Input,
-  Text,
-} from '@/components/ui';
-import { ArrowLeft, Close, Gallery, Star } from '@/components/ui/icons';
-import { MovieGenres } from '@/lib/consts';
+import { Button, colors, ControlledInput, Image, Text } from '@/components/ui';
+import { ArrowLeft, Close, Gallery } from '@/components/ui/icons';
+import { trackMovieEvent } from '@/lib/facebook-attribution';
 import { addMovie, updateMovie, useMovie } from '@/lib/storage';
 import { deleteImage, saveImagePermanently } from '@/lib/utils/image-manager';
-import { trackMovieEvent } from '@/lib/facebook-attribution';
 import { type Movie } from '@/types';
 
 const schema = z.object({
@@ -107,7 +99,7 @@ const Id = () => {
       actors: value.actor_object?.array ?? [],
       genres: value.genres ?? [],
     };
-    
+
     // Track Facebook attribution event
     const isNewMovie = !movie;
     if (isNewMovie) {
@@ -122,7 +114,7 @@ const Id = () => {
     } else {
       updateMovie(new_movie);
     }
-    
+
     router.back();
   };
 
@@ -138,283 +130,92 @@ const Id = () => {
         </Pressable>
       </View>
       <ScrollView
-        contentContainerClassName="gap-4 px-4"
+        contentContainerClassName="gap-4 px-4 pt-4"
         style={{ marginBottom: insets.bottom }}
       >
-        <Text className="mt-4 text-xl font-bold">Основное</Text>
         <Controller
           name={'image'}
           control={control}
           render={({ field: { value, onChange } }) => (
-            <TouchableOpacity
-              onPress={() => onPickImage(onChange)}
-              className="h-44 w-32 items-center justify-center rounded-xl bg-bgGrey"
-            >
-              {value ? (
-                <View className={'relative'}>
-                  <Image
-                    className="h-44 w-32 rounded-xl"
-                    contentFit={'cover'}
-                    source={{
-                      uri: value,
-                    }}
-                  />
-                  <TouchableOpacity
-                    onPress={() => onChange('')}
-                    className={
-                      'absolute -right-3 -top-3 rounded-2xl bg-bgGrey p-1'
-                    }
-                  >
-                    <Close color={colors.textGrey} width={20} height={20} />
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <Gallery />
-              )}
-            </TouchableOpacity>
+            <View className={'items-center gap-4'}>
+              <View className="h-60 w-40 items-center justify-center rounded-xl bg-bgGrey">
+                {value ? (
+                  <View className={'relative'}>
+                    <Image
+                      className="h-60 w-40 rounded-xl"
+                      contentFit={'cover'}
+                      source={{
+                        uri: value,
+                      }}
+                    />
+                    <TouchableOpacity
+                      onPress={() => onChange('')}
+                      className={
+                        'absolute -right-3 -top-3 rounded-2xl bg-bgGrey p-1'
+                      }
+                    >
+                      <Close color={colors.textGrey} width={20} height={20} />
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <Gallery />
+                )}
+              </View>
+              <TouchableOpacity
+                onPress={() => onPickImage(onChange)}
+                className={'w-40 items-center rounded-lg bg-[#F7F7F7] py-2'}
+              >
+                <Text className="text-md font-montserrat-500">
+                  Upload Phone
+                </Text>
+              </TouchableOpacity>
+            </View>
           )}
         />
 
-        <ControlledInput control={control} name={'title'} label={'Title'} />
         <ControlledInput
-          name={'description'}
-          textAlignVertical="top"
-          multiline
           control={control}
-          style={{ minHeight: 100 }}
-          label={'Description'}
+          name={'title'}
+          label={'Title'}
+          outlined
+          placeholder={'Spider Man: No Way Home'}
         />
-        <View className="gap-2">
-          <Text className="text-lg text-textGrey">Rating</Text>
-          <Controller
-            render={({ field: { value, onChange } }) => (
-              <View className="flex-row items-center justify-between">
-                <View className="flex-row gap-2 self-start">
-                  {new Array(5).fill(0).map((_, i) => (
-                    <TouchableOpacity
-                      key={i}
-                      onPress={() => onChange(i + 1)}
-                      className={`items-center justify-center rounded-xl ${value >= i + 1 ? 'bg-orange' : 'bg-bgGrey'} p-4`}
-                    >
-                      <Star
-                        color={value >= i + 1 ? 'white' : colors.textGrey}
-                        width={20}
-                        height={20}
-                      />
-                    </TouchableOpacity>
-                  ))}
-                </View>
-                <Text className="text-lg font-bold">{value}.0</Text>
-              </View>
-            )}
-            name={'rating'}
-            control={control}
-          />
-        </View>
-        <View className="mt-10 gap-8">
-          <Text className="mb-4 text-2xl text-black">Information</Text>
+
+        <View className="flex-1 flex-row gap-3">
           <ControlledInput
+            outlined
             control={control}
-            name={'director'}
-            label={'Director'}
+            placeholder={'2022'}
+            name={'release_year'}
+            label={'Release year'}
           />
           <ControlledInput
             control={control}
             name={'runtime'}
+            placeholder={'2h 25min'}
             label={'Runtime'}
+            outlined
           />
           <ControlledInput
             control={control}
-            name={'release_year'}
-            label={'Release year'}
+            name={'runtime'}
+            label={'Rating'}
+            placeholder={'3.4'}
+            outlined
           />
-          <View>
-            <Text className="mb-1 text-lg text-textGrey">Country</Text>
-            <Controller
-              render={({ field: { value, onChange } }) => (
-                <View className={`rounded-xl bg-light`}>
-                  <Input
-                    outlined
-                    value={value?.value ?? ''}
-                    onChangeText={(text) => onChange({ ...value, value: text })}
-                    icon={
-                      <TouchableOpacity
-                        onPress={() =>
-                          onChange({
-                            value: '',
-                            array: [
-                              ...(value?.array ?? []),
-                              value?.value ?? '',
-                            ],
-                          })
-                        }
-                      >
-                        <Text className="mr-6 p-2 text-lg  text-blue">
-                          Save
-                        </Text>
-                      </TouchableOpacity>
-                    }
-                  />
-                  {value && value.array && value.array.length > 0 && (
-                    <View className="mx-4 gap-3 py-4">
-                      <View className="flex-row items-center justify-between ">
-                        <Text className="text-base text-textGrey">
-                          Total: {value.array.length}
-                        </Text>
-                        <TouchableOpacity
-                          onPress={() => onChange({ ...value, array: [] })}
-                          className="flex-row items-center gap-2"
-                        >
-                          <Text className="text-base text-textGrey">
-                            Clear all
-                          </Text>
-                          <Close width={16} height={16} />
-                        </TouchableOpacity>
-                      </View>
+        </View>
+        <View className="gap-8">
+          <ControlledInput
+            name={'description'}
+            textAlignVertical="top"
+            placeholder={'Your Review....'}
+            multiline
+            outlined
+            control={control}
+            style={{ minHeight: 100 }}
+            label={'Review'}
+          />
 
-                      <View className="flex-row flex-wrap gap-2">
-                        {value.array.map((item) => (
-                          <View
-                            key={item}
-                            className="flex-row items-center justify-between gap-2 rounded-lg border border-lightGrey2 bg-white px-4 py-2"
-                          >
-                            <Text className="text-base">{item}</Text>
-                            <TouchableOpacity
-                              onPress={() =>
-                                onChange({
-                                  ...value,
-                                  array: (value?.array ?? []).filter(
-                                    (i) => i !== item
-                                  ),
-                                })
-                              }
-                            >
-                              <Close
-                                width={16}
-                                height={16}
-                                color={colors.textGrey}
-                              />
-                            </TouchableOpacity>
-                          </View>
-                        ))}
-                      </View>
-                    </View>
-                  )}
-                </View>
-              )}
-              name={'country_object'}
-              control={control}
-            />
-          </View>
-          <View className="mt-8">
-            <Text className="mb-1 text-lg text-textGrey">Actors</Text>
-            <Controller
-              render={({ field: { value, onChange } }) => (
-                <View className={`rounded-xl bg-light`}>
-                  <Input
-                    outlined
-                    value={value?.value ?? ''}
-                    onChangeText={(text) => onChange({ ...value, value: text })}
-                    icon={
-                      <TouchableOpacity
-                        onPress={() =>
-                          onChange({
-                            value: '',
-                            array: [
-                              ...(value?.array ?? []),
-                              value?.value ?? '',
-                            ],
-                          })
-                        }
-                      >
-                        <Text className="mr-6 p-2 text-lg  text-blue">
-                          Save
-                        </Text>
-                      </TouchableOpacity>
-                    }
-                  />
-                  {value && value.array && value.array.length > 0 && (
-                    <View className="mx-4 gap-3 py-4">
-                      <View className="flex-row items-center justify-between ">
-                        <Text className="text-base text-textGrey">
-                          Total: {value.array.length}
-                        </Text>
-                        <TouchableOpacity
-                          onPress={() => onChange({ ...value, array: [] })}
-                          className="flex-row items-center gap-2"
-                        >
-                          <Text className="text-base text-textGrey">
-                            Clear all
-                          </Text>
-                          <Close width={16} height={16} />
-                        </TouchableOpacity>
-                      </View>
-
-                      <View className="flex-row flex-wrap gap-2">
-                        {value.array.map((country) => (
-                          <View
-                            key={country}
-                            className="flex-row items-center justify-between gap-2 rounded-lg border border-lightGrey2 bg-white px-4 py-2"
-                          >
-                            <Text className="text-base">{country}</Text>
-                            <TouchableOpacity
-                              onPress={() =>
-                                onChange({
-                                  ...value,
-                                  array: (value?.array ?? []).filter(
-                                    (item) => item !== country
-                                  ),
-                                })
-                              }
-                            >
-                              <Close
-                                width={16}
-                                height={16}
-                                color={colors.textGrey}
-                              />
-                            </TouchableOpacity>
-                          </View>
-                        ))}
-                      </View>
-                    </View>
-                  )}
-                </View>
-              )}
-              name={'actor_object'}
-              control={control}
-            />
-          </View>
-          <View>
-            <Text className="text-lg text-textGrey">Genres</Text>
-            <Controller
-              render={({ field: { value, onChange } }) => (
-                <View className="mt-2 flex-row flex-wrap gap-2 self-start">
-                  {Object.keys(MovieGenres).map((item) => (
-                    <TouchableOpacity
-                      key={item}
-                      onPress={() =>
-                        onChange(
-                          value?.find((genre) => genre === item)
-                            ? (value?.filter((genre) => genre !== item) ?? [])
-                            : [...(value || []), item]
-                        )
-                      }
-                    >
-                      <Text
-                        className={`${value?.find((genre) => item === genre) ? 'bg-blue text-white' : 'bg-lightGrey text-black'}
-                          rounded-lg px-3 py-1 text-base 
-                        `}
-                      >
-                        {MovieGenres[item as keyof typeof MovieGenres]}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              )}
-              name={'genres'}
-              control={control}
-            />
-          </View>
           <Button
             className="mt-12"
             label={'Save'}

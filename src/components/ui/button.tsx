@@ -9,13 +9,13 @@ const button = tv({
   slots: {
     container:
       'flex flex-1 flex-row items-center justify-center gap-2 rounded-lg',
-    label: 'font-inter text-lg font-semibold',
+    label: 'font-montserrat-600 text-lg ',
   },
 
   variants: {
     variant: {
       default: {
-        container: 'bg-blue',
+        container: 'bg-orange',
         label: 'text-white',
       },
       secondary: {
