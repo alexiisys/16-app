@@ -1,4 +1,4 @@
-export type Movie = {
+export type Film = {
   id: string;
   image: string;
   title: string;
@@ -7,7 +7,5 @@ export type Movie = {
   director: string;
   runtime: string;
   release_year: string;
-  countries: string[];
-  actors: string[];
-  genres: string[];
+  genre: string;
 };

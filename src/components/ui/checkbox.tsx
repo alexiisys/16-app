@@ -9,6 +9,8 @@ import {
 import Svg, { Path } from 'react-native-svg';
 
 import colors from '@/components/ui/colors';
+import { Moon } from '@/components/ui/icons/moon';
+import { Sun } from '@/components/ui/icons/sun';
 
 import { Text } from './text';
 
@@ -67,7 +69,7 @@ const Label = ({ text, testID, className = '' }: LabelProps) => {
   return (
     <Text
       testID={testID}
-      className={` ${className} pl-2 font-montserrat-800 text-base text-textGrey`}
+      className={` ${className} pl-2 font-montserrat-500 text-base text-black dark:text-white`}
     >
       {text}
     </Text>
@@ -206,11 +208,24 @@ export const SwitchIcon = ({ checked = false }: IconProps) => {
     ? THUMB_OFFSET
     : WIDTH - THUMB_WIDTH - THUMB_OFFSET;
 
-  const backgroundColor = checked ? colors.light : colors.textGrey;
+  const backgroundColor = !checked ? colors.light : colors.orange;
 
+  const icon = checked ? (
+    <Sun
+      color={colors.orange}
+      width={THUMB_WIDTH - 3}
+      height={THUMB_HEIGHT - 3}
+    />
+  ) : (
+    <Moon
+      color={colors.white}
+      width={THUMB_WIDTH - 3}
+      height={THUMB_HEIGHT - 3}
+    />
+  );
   return (
     <View className="w-[50px] justify-center">
-      <View className="overflow-hidden rounded-full">
+      <View className="border-gray overflow-hidden rounded-full border border-light">
         <View
           style={{
             width: WIDTH,
@@ -224,7 +239,8 @@ export const SwitchIcon = ({ checked = false }: IconProps) => {
           height: THUMB_HEIGHT,
           width: THUMB_WIDTH,
           position: 'absolute',
-          backgroundColor: 'white',
+          backgroundColor: !checked ? 'black' : 'white',
+          padding: 2,
           borderRadius: 13,
           right: 0,
         }}
@@ -232,7 +248,9 @@ export const SwitchIcon = ({ checked = false }: IconProps) => {
           translateX: I18nManager.isRTL ? translateX : -translateX,
         }}
         transition={{ translateX: { overshootClamping: true } }}
-      />
+      >
+        {icon}
+      </MotiView>
     </View>
   );
 };

@@ -1,31 +1,53 @@
 import { Env } from '@env';
-import { type Href, Link } from 'expo-router';
+import { type Href, Link, useRouter } from 'expo-router';
 import React from 'react';
-import { Linking, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Linking, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Button, Text } from '@/components/ui';
+import { Button, Switch, Text } from '@/components/ui';
+import { useSelectedTheme } from '@/lib';
 
 export default function Settings() {
+  const insets = useSafeAreaInsets();
+  const router = useRouter();
+  const { selectedTheme, setSelectedTheme } = useSelectedTheme();
+  const isDark = selectedTheme === 'dark';
+  const switchTheme = () => setSelectedTheme(isDark ? 'light' : 'dark');
   return (
     <>
-      <SafeAreaView className=" mt-4 flex-1 px-6">
-        <View className="relative flex-1 gap-10">
-          <View
-            className="absolute right-0 w-full gap-4"
-            style={{ bottom: 12 }}
+      <View
+        className=" flex-1 bg-orange "
+        style={{ paddingTop: insets.top + 8 }}
+      >
+        <View className="mx-5 mb-8 flex-row">
+          <TouchableOpacity
+            className="flex-1 justify-center"
+            onPress={() => router.back()}
           >
-            <Link href={Env.PRIVACY_POLICY as Href} className="underline">
-              Privacy Policy
-            </Link>
-            <Text className="text-center ">Have a problem?</Text>
-            <Button
-              label={'Contact us'}
-              onPress={() => Linking.canOpenURL(Env.FEEDBACK_FORM)}
-            />
-          </View>
+            <Text className="font-montserrat-400 text-lg text-white">Back</Text>
+          </TouchableOpacity>
+          <Text className="flex-1 text-center font-montserrat-700 text-3xl text-white">
+            Settings
+          </Text>
+          <View className="flex-1" />
         </View>
-      </SafeAreaView>
+        <View className="flex-1 gap-10 rounded-t-2xl bg-white p-8">
+          <Switch
+            checked={!isDark}
+            onChange={switchTheme}
+            label={isDark ? 'Dark theme' : 'Light theme'}
+            accessibilityLabel={'theme_switch'}
+          />
+          <Link href={Env.PRIVACY_POLICY as Href} className="underline">
+            Privacy Policy
+          </Link>
+          <Button
+            label={'Help & Contacts'}
+            onPress={() => Linking.canOpenURL(Env.FEEDBACK_FORM)}
+          />
+          <View className="flex-1" />
+        </View>
+      </View>
     </>
   );
 }

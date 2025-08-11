@@ -3,54 +3,36 @@ import { launchImageLibraryAsync } from 'expo-image-picker';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Pressable, ScrollView, TouchableOpacity, View } from 'react-native';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { z } from 'zod';
 
 import { Button, colors, ControlledInput, Image, Text } from '@/components/ui';
-import { ArrowLeft, Close, Gallery } from '@/components/ui/icons';
+import { Close, Gallery } from '@/components/ui/icons';
 import { trackMovieEvent } from '@/lib/facebook-attribution';
 import { addMovie, updateMovie, useMovie } from '@/lib/storage';
 import { deleteImage, saveImagePermanently } from '@/lib/utils/image-manager';
-import { type Movie } from '@/types';
+import { type Film } from '@/types';
 
 const schema = z.object({
   id: z.string(),
   image: z.string().optional(),
   title: z.string({ message: 'Необходимо заполнить' }),
   description: z.string().optional(),
-  rating: z.number(),
+  rating: z.string().optional(),
   director: z.string().optional(),
   runtime: z.string().optional(),
   release_year: z.string().optional(),
-  country_object: z
-    .object({
-      value: z.string().optional(),
-      array: z.array(z.string()).optional(),
-    })
-    .optional(),
-  actor_object: z
-    .object({
-      value: z.string().optional(),
-      array: z.array(z.string()).optional(),
-    })
-    .optional(),
-  genres: z.array(z.string()).optional(),
+  genre: z.string().optional(),
 });
 type FormType = z.infer<typeof schema>;
 
-const useFormMovie = (movie?: Movie) =>
+const useFormMovie = (movie?: Film) =>
   useForm<FormType>({
     defaultValues: {
       ...(movie ?? {}),
       id: movie?.id ?? `movie_${Date.now()}`,
-      rating: movie?.rating ?? 5,
-      country_object: {
-        array: movie?.countries ?? [],
-      },
-      actor_object: {
-        array: movie?.actors ?? [],
-      },
+      rating: String(movie?.rating ?? ''),
     },
     resolver: zodResolver(schema),
   });
@@ -86,18 +68,16 @@ const Id = () => {
       value.image === movie?.image
         ? (movie?.image ?? '')
         : await saveImagePermanently(value.image);
-    const new_movie: Movie = {
+    const new_movie: Film = {
       id: value.id,
       image: savedUri,
       description: value.description ?? '',
       title: value.title,
-      rating: value.rating,
+      rating: isNaN(Number(value.rating)) ? 5 : Number(value.rating),
       director: value.director ?? '',
       runtime: value.runtime ?? '',
       release_year: value.release_year ?? '',
-      countries: value.country_object?.array ?? [],
-      actors: value.actor_object?.array ?? [],
-      genres: value.genres ?? [],
+      genre: value.genre ?? '',
     };
 
     // Track Facebook attribution event
@@ -109,7 +89,7 @@ const Id = () => {
         movieId: new_movie.id,
         movieTitle: new_movie.title,
         rating: new_movie.rating,
-        genre: new_movie.genres?.[0] || 'unknown',
+        genre: new_movie.genre || 'unknown',
       });
     } else {
       updateMovie(new_movie);
@@ -119,19 +99,23 @@ const Id = () => {
   };
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="dark:bg-orange2 flex-1 bg-orange">
       <Stack.Screen options={{ headerShown: false }} />
       <View
-        className="flex-row items-center justify-between rounded-b-3xl bg-light px-5 pb-4"
+        className="flex-row items-center px-5 pb-4"
         style={{ paddingTop: insets.top + 8 }}
       >
-        <Pressable onPress={onPress}>
-          <ArrowLeft />
-        </Pressable>
+        <TouchableOpacity className="flex-1 justify-center" onPress={onPress}>
+          <Text className="font-montserrat-400 text-lg text-white">Back</Text>
+        </TouchableOpacity>
+        <Text className="flex-1 text-center font-montserrat-700 text-3xl text-white">
+          {!!movie ? 'Edit' : 'Add'} Film
+        </Text>
+        <View className="flex-1" />
       </View>
       <ScrollView
-        contentContainerClassName="gap-4 px-4 pt-4"
-        style={{ marginBottom: insets.bottom }}
+        contentContainerClassName="gap-4 px-4 pt-4 flex-1 bg-white justify-start rounded-t-2xl"
+        contentContainerStyle={{ paddingBottom: insets.bottom }}
       >
         <Controller
           name={'image'}
@@ -181,7 +165,7 @@ const Id = () => {
           placeholder={'Spider Man: No Way Home'}
         />
 
-        <View className="flex-1 flex-row gap-3">
+        <View className="flex-row gap-3">
           <ControlledInput
             outlined
             control={control}
@@ -198,30 +182,36 @@ const Id = () => {
           />
           <ControlledInput
             control={control}
-            name={'runtime'}
+            name={'rating'}
             label={'Rating'}
-            placeholder={'3.4'}
+            keyboardType={'numeric'}
+            placeholder={'2'}
             outlined
           />
         </View>
-        <View className="gap-8">
-          <ControlledInput
-            name={'description'}
-            textAlignVertical="top"
-            placeholder={'Your Review....'}
-            multiline
-            outlined
-            control={control}
-            style={{ minHeight: 100 }}
-            label={'Review'}
-          />
+        <ControlledInput
+          control={control}
+          name={'genre'}
+          label={'Genre'}
+          placeholder={'Horror, Fantasy, Sci-Fi'}
+          outlined
+        />
+        <ControlledInput
+          name={'description'}
+          textAlignVertical="top"
+          placeholder={'Your Review....'}
+          multiline
+          outlined
+          control={control}
+          style={{ minHeight: 100 }}
+          label={'Review'}
+        />
 
-          <Button
-            className="mt-12"
-            label={'Save'}
-            onPress={handleSubmit(onSavePress)}
-          />
-        </View>
+        <Button
+          className="mt-12"
+          label={'Save'}
+          onPress={handleSubmit(onSavePress)}
+        />
       </ScrollView>
     </View>
   );

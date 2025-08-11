@@ -1,8 +1,8 @@
-import { type Movie } from '@/types/movie';
+import { type Film } from '@/types/movie';
 
 import { getItem, setItem } from '../../helpers';
 
 const store = 'movies';
 
-export const getMovies = () => getItem<Movie[]>(store);
-export const writeMovies = (value: Movie[]) => setItem<Movie[]>(store, value);
+export const getMovies = () => getItem<Film[]>(store);
+export const writeMovies = (value: Film[]) => setItem<Film[]>(store, value);

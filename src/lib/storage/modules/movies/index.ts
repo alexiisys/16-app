@@ -1,16 +1,16 @@
 import { create } from 'zustand';
 
 import { createSelectors } from '@/lib/utils';
-import { type Movie } from '@/types/movie';
+import { type Film } from '@/types/movie';
 
 import { getMovies, writeMovies } from './utils';
 
 interface MovieState {
-  movies: Movie[];
+  movies: Film[];
   readMovies: () => void;
-  addMovie: (movie: Movie) => void;
+  addMovie: (movie: Film) => void;
   deleteMovie: (id: string) => void;
-  updateMovie: (movie: Movie) => void;
+  updateMovie: (movie: Film) => void;
 }
 
 const _useMovie = create<MovieState>((set, get) => ({
@@ -22,7 +22,7 @@ const _useMovie = create<MovieState>((set, get) => ({
     }));
   },
 
-  addMovie: (movie: Movie) => {
+  addMovie: (movie: Film) => {
     set((state) => ({
       movies: [...state.movies, movie],
     }));
@@ -36,7 +36,7 @@ const _useMovie = create<MovieState>((set, get) => ({
     writeMovies(get().movies);
   },
 
-  updateMovie: (movie: Movie) => {
+  updateMovie: (movie: Film) => {
     set((state) => ({
       movies: state.movies.map((m) => (m.id === movie.id ? movie : m)),
     }));
@@ -48,9 +48,9 @@ export const useMovie = createSelectors(_useMovie);
 
 export const readMovies = _useMovie.getState().readMovies;
 
-export const addMovie = (movie: Movie) => _useMovie.getState().addMovie(movie);
+export const addMovie = (movie: Film) => _useMovie.getState().addMovie(movie);
 
 export const deleteMovie = _useMovie.getState().deleteMovie;
 
-export const updateMovie = (movie: Movie) =>
+export const updateMovie = (movie: Film) =>
   _useMovie.getState().updateMovie(movie);
