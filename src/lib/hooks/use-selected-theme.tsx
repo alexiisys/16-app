@@ -29,4 +29,7 @@ export const loadSelectedTheme = () => {
     console.log('theme', theme);
     colorScheme.set(theme as ColorSchemeType);
   }
+  if (theme === undefined) {
+    colorScheme.set('light');
+  }
 };

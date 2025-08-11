@@ -1,13 +1,15 @@
 import { FlashList } from '@shopify/flash-list';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Pressable, TouchableOpacity } from 'react-native';
 import { type TextInput as NTextInput } from 'react-native/Libraries/Components/TextInput/TextInput';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { deleteMovie, useMovie } from 'src/lib/storage/modules/movies';
 
-import { colors, Image, Input, Text, View } from '@/components/ui';
-import { Close, Plus, Search, Settings } from '@/components/ui/icons';
+import { colors, Image, Input, Text, useModal, View } from '@/components/ui';
+import { Plus, Search, Settings, TrashCan } from '@/components/ui/icons';
+import FilmModal from '@/components/ui/modal/film-modal';
+import { useSelectedTheme } from '@/lib';
 import { trackSearch } from '@/lib/facebook-attribution';
 import { type Film } from '@/types';
 
@@ -15,7 +17,16 @@ export default function Contacts() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const movies = useMovie.use.movies();
+  const refModal = useModal();
   const [editMode, setEditMode] = useState(false);
+  const [selectedMovie, setSelectedMovie] = useState<Film | null>(null);
+  const onOpenModal = (item: Film) => {
+    refModal.present();
+    setSelectedMovie(item);
+  };
+  const { selectedTheme } = useSelectedTheme();
+  const isDark = selectedTheme === 'dark';
+
   const renderItem = React.useCallback(
     ({ item }: { item: Film }) => {
       return (
@@ -23,9 +34,9 @@ export default function Contacts() {
           onPress={() =>
             editMode
               ? router.navigate(`/movie-editor/${item.id}`)
-              : router.navigate(`/movie-info-profile/${item.id}`)
+              : onOpenModal(item)
           }
-          className="w-full flex-1 flex-row items-center overflow-hidden rounded-xl bg-white p-2"
+          className="w-full flex-1 flex-row items-center overflow-hidden rounded-xl bg-white p-2 dark:bg-dark"
           key={item.id}
         >
           <View className="relative h-52 w-40 flex-row overflow-hidden rounded-xl bg-lightGrey">
@@ -48,19 +59,16 @@ export default function Contacts() {
           </View>
           {editMode ? (
             <TouchableOpacity onPress={() => deleteMovie(item.id)}>
-              <Close color={colors.red} />
+              <TrashCan width={24} height={24} color={colors.red} />
             </TouchableOpacity>
           ) : null}
         </Pressable>
       );
     },
-    [router, editMode]
+    [editMode, router, onOpenModal]
   );
-  const [searchIsVisible, setSearchIsVisible] = React.useState<boolean>(false);
   const searchRef = React.useRef<NTextInput>(null);
-  useEffect(() => {
-    setTimeout(() => searchRef?.current?.focus(), 100);
-  }, [searchIsVisible]);
+
   const [searchValue, setSearchValue] = React.useState<string>('');
 
   // Track search events for Facebook attribution
@@ -78,8 +86,7 @@ export default function Contacts() {
       }, 500);
     }
   }, []);
-
-  const filteredMovies: Film[] = React.useMemo(
+  const filteredFilms: Film[] = React.useMemo(
     () =>
       movies.filter((movie) =>
         movie.title.toLowerCase().includes(searchValue.toLowerCase())
@@ -87,7 +94,8 @@ export default function Contacts() {
     [movies, searchValue]
   );
   return (
-    <View className="flex-1 bg-orange">
+    <View className="flex-1 bg-orange dark:bg-orange2">
+      <FilmModal item={selectedMovie} ref={refModal.ref} />
       <View
         className="rounded-b-3xl px-5 pb-4"
         style={{ paddingTop: insets.top + 8 }}
@@ -120,23 +128,22 @@ export default function Contacts() {
               setSearchValue(text);
               trackSearchEvent(text);
             }}
-            onBlur={() => setSearchIsVisible(searchValue.length !== 0)}
             leftIcon={<Search color={'#4C4E61'} />}
             search
           />
           <TouchableOpacity
             onPress={() => router.navigate('/(app)/settings')}
-            className="rounded-xl bg-white p-2"
+            className="rounded-xl bg-white p-2 dark:bg-dark"
           >
-            <Settings color={colors.orange} />
+            <Settings color={isDark ? colors.orange2 : colors.orange} />
           </TouchableOpacity>
         </View>
       </View>
-      <View className="flex-1 rounded-t-2xl bg-white p-4">
+      <View className="flex-1 rounded-t-2xl bg-white p-4  dark:bg-dark">
         <FlashList
           className="flex-1"
-          data={filteredMovies}
-          extraData={[filteredMovies, movies]}
+          data={filteredFilms}
+          extraData={[filteredFilms, movies]}
           renderItem={renderItem}
           keyExtractor={(item) => `item-${item.id}`}
           estimatedItemSize={80}

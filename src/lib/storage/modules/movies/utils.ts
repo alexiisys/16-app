@@ -1,4 +1,4 @@
-import { type Film } from '@/types/movie';
+import { type Film } from '@/types/film';
 
 import { getItem, setItem } from '../../helpers';
 

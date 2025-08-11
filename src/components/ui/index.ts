@@ -7,7 +7,6 @@ export { default as colors } from './colors';
 export * from './focus-aware-status-bar';
 export * from './image';
 export * from './input';
-export * from './list';
 export * from './modal';
 export * from './progress-bar';
 export * from './select';

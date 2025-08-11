@@ -45,7 +45,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       `applinks:${Env.IOS_APP_DOMAIN.replace('.app.link', '-alternate.app.link')}`,
     ],
     config: {
-      usesNonExemptEncryption: false, 
+      usesNonExemptEncryption: false,
     },
   },
   experiments: {
@@ -69,7 +69,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
           },
           {
             scheme: 'https',
-            host: Env.IOS_APP_DOMAIN.replace('.app.link', '-alternate.app.link'),
+            host: Env.IOS_APP_DOMAIN.replace(
+              '.app.link',
+              '-alternate.app.link'
+            ),
           },
         ],
         category: ['BROWSABLE', 'DEFAULT'],
@@ -125,15 +128,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
           'node_modules/@expo-google-fonts/montserrat/600SemiBold/Montserrat_600SemiBold.ttf',
           'node_modules/@expo-google-fonts/montserrat/700Bold/Montserrat_700Bold.ttf',
           'node_modules/@expo-google-fonts/montserrat/800ExtraBold/Montserrat_800ExtraBold.ttf',
-          './assets/fonts/Gilroy-Regular.ttf',
-          './assets/fonts/Gilroy-Bold.ttf',
-          './assets/fonts/Gilroy-SemiBold.ttf',
-          './assets/fonts/Gilroy-Medium.ttf',
-          './assets/fonts/Gilroy-ExtraBold.ttf',
-          './assets/fonts/Gilroy-Thin.ttf',
-          './assets/fonts/Gilroy-UltraLight.ttf',
-          './assets/fonts/Gilroy-Light.ttf',
-          './assets/fonts/Gilroy-Black.ttf',
         ],
       },
     ],

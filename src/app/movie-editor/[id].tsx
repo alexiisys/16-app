@@ -99,7 +99,7 @@ const Id = () => {
   };
 
   return (
-    <View className="dark:bg-orange2 flex-1 bg-orange">
+    <View className="flex-1 bg-orange dark:bg-orange2">
       <Stack.Screen options={{ headerShown: false }} />
       <View
         className="flex-row items-center px-5 pb-4"
@@ -108,13 +108,13 @@ const Id = () => {
         <TouchableOpacity className="flex-1 justify-center" onPress={onPress}>
           <Text className="font-montserrat-400 text-lg text-white">Back</Text>
         </TouchableOpacity>
-        <Text className="flex-1 text-center font-montserrat-700 text-3xl text-white">
+        <Text className="flex-1 text-center font-montserrat-700 text-2xl text-white">
           {!!movie ? 'Edit' : 'Add'} Film
         </Text>
         <View className="flex-1" />
       </View>
       <ScrollView
-        contentContainerClassName="gap-4 px-4 pt-4 flex-1 bg-white justify-start rounded-t-2xl"
+        contentContainerClassName="gap-4 px-4 pt-4 flex-1 bg-white dark:bg-dark justify-start rounded-t-2xl flex-1"
         contentContainerStyle={{ paddingBottom: insets.bottom }}
       >
         <Controller

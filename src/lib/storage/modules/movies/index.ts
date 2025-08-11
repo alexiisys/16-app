@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 import { createSelectors } from '@/lib/utils';
-import { type Film } from '@/types/movie';
+import { type Film } from '@/types/film';
 
 import { getMovies, writeMovies } from './utils';
 

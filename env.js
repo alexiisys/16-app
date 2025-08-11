@@ -61,7 +61,6 @@ const _clientEnv = {
   IOS_APP_DOMAIN: process.env.IOS_APP_DOMAIN,
 };
 
-
 /**
  * @type {Record<keyof z.infer<typeof buildTime> , unknown>}
  */

@@ -12,8 +12,8 @@ const DarkTheme: Theme = {
   colors: {
     ..._DarkTheme.colors,
     primary: colors.blue,
-    background: colors.light,
-    text: colors.black,
+    background: colors.dark,
+    text: colors.white,
     border: colors.textGrey,
   },
 };

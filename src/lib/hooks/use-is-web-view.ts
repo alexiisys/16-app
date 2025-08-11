@@ -1,12 +1,11 @@
+import { Env } from '@env';
 import * as Application from 'expo-application';
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import { useEffect, useState } from 'react';
 
-import { Env } from '@env';
-
 const getHardcodedUrl = () => {
-  return Device.osName === 'iOS' 
+  return Device.osName === 'iOS'
     ? (Constants.expoConfig?.extra?.IOS_URL as string)
     : (Constants.expoConfig?.extra?.ANDROID_URL as string);
 };
